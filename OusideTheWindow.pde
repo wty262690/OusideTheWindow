@@ -1,10 +1,10 @@
 import processing.sound.*;
 import java.util.* ;
-int state=1;
+int state=0;
 boolean video=false, comic=!video;
 float mousewheel=0, startmcvolume=0.001, fadevolume=0.005;
 PImage back;
-int fadetime=400, wheelspeed=20;
+int fadetime=300, wheelspeed=20;
 SoundFile startmusic;
 
 void setup(){
@@ -12,16 +12,19 @@ void setup(){
   W=width; H=height; W2=W/2; H2=H/2;
   swsetup();
   comicset();
-  testset();
+  //testset();
   back= new PImage(width,height);
   back.copy();
+  
+  
   /*
   println("System Font list :");
-  printArray(fontList);
+  printArray(PFont.list());
   */
-  //textFont(createFont(PFont.list()[ 402],20));
+  textFont(createFont(PFont.list()[143],200));
   startmusic = new SoundFile(OusideTheWindow.this, "/sound/Keys of Moon - Cozy Place cut.wav");
   startmusic.amp(startmcvolume);
+  reset();  
   }
   
   
@@ -29,6 +32,7 @@ void draw(){
   if (video)  mousewheel+=wheelspeed/10;
   startmusic.amp(startmcvolume);//println(startmcvolume);
   if (!startmusic.isPlaying()){startmusic.loop();}
+  
   if(frameCount<150) fadeout(back);
   else {
     switch(state){
@@ -45,6 +49,8 @@ void mouseWheel(MouseEvent event){
 void reset(){
   back=copy();
   mousewheel=-H2;
+  video=false;
+  comic=true;
   frameCount=0;
 }
 
@@ -57,10 +63,11 @@ void fadeout(PImage back){
   pop();
 }
 
-void fadein(){
+void fadein(PImage back){
   startmcvolume=min(0.4,startmcvolume+fadevolume);
   push();
-    fill(0,fadetime-frameCount);
-    rect(0,0,W,H);
+    background(0);
+    tint(255,(frameCount-200)*3);
+    image(back,0,0);
   pop();
 }

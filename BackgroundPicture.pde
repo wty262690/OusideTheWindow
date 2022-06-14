@@ -4,38 +4,42 @@ class BP{
   String[] smallpagename = new String[pagenum];
   PImage[] page= new PImage[pagename.length];
   int [] SamllPageNum={0,0,0,3,0,1,0,0,2,0,4,1,1,1,1,1,0,0,1,1,0};
-  int [] cover={0,0,0,0,0,1,0,0,2,0,4,1,1,1,1,1,0,0,1,1,0};
-  ArrayList<SP> smallpage ;
+  int [] CoverNum={0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0};
+  ArrayList<SP> smallpage,cover ;
   SP leaf;  
   float pageh;
+  int pindex=0;
+  boolean changestate=false;
   BP(){
     smallpage = new ArrayList<SP>();
+    cover = new ArrayList<SP>();
     leaf= new SP("leaf",1);
     for(int i=0; i<page.length; i++){
       pagename[i]=str(i+2);
       page[i]=loadImage(Path+pagename[i]+".png");
       page[i].resize(width,height*(page[i].width/width));
       smallpage.add(new SP(str(i+2),SamllPageNum[i]));
+      cover.add(new SP(str(i+2)+"-cover",CoverNum[i]));
     }
     pageh=page[0].height;
   }
   void bpdraw(){
     ////---------background---------////
-    int pindex=int(mousewheel/pageh);
+    pindex=int(mousewheel/pageh);
     if (pindex>=0 && pindex<page.length){
+      changestate=false;
       copy(page[pindex],0,int(mousewheel-(pindex*pageh)),page[pindex].width,height,0,0,width,height);
       if (pindex+1<page.length)  copy(page[pindex+1],0,0,page[pindex].width,height,0,int(((pindex+1)*pageh)-mousewheel),width,height);
     }
-    else {
+    if (pindex<0|| (pindex==page.length-1 && pageh-(mousewheel-pindex*pageh)<H)){
       mousewheel=pageh*pindex;
       if (pindex<0) pindex++;
-      else pindex--;
-      print("end");
+      changestate=true;
     }
-    
     ////---------window---------////
-    SP p;
+    SP p,c;
     p = smallpage.get(pindex);
+    c = cover.get(pindex);
     switch(pindex+2){
       case(5):  p.spdraw(pindex, pageh,H/8,250, new PVector(0,-100), new PVector(0,100), new PVector(0,0));  break;
       case(7):  p.spdraw(pindex, pageh,H/1.5,0, new PVector(100,0), new PVector(-100,0),  new PVector(0,0));  break;
@@ -46,13 +50,29 @@ class BP{
       case(11):  leaf.spdraw(pindex, pageh,0,0,new PVector(((mousewheel-(pageh*pindex)))*0.9,(mousewheel-(pageh*pindex)*0.5)*0.025),new PVector(-W/1.2,H/3),new PVector(W2,pageh)); break;
       case(12):  p.spdraw(pindex, pageh,-H/8,100,new PVector(0,0), new PVector(0,0), new PVector(0,0)); break;
       case(13):  p.spdraw(pindex, pageh,H/8,300,new PVector(0,50), new PVector(0,-30), new PVector(0,0));  
-                 p=smallpage.get(pindex+1); p.spdraw(pindex, pageh,H*1.7,0,new PVector(0,70), new PVector(0,700), new PVector(0,1000)); break;
-      case(14):  p.spdraw(pindex, pageh,-H,0,new PVector(0,50), new PVector(0,-885), new PVector(0,1000)); break;
+                 p=smallpage.get(pindex+1); p.spdraw(pindex, pageh,H*1.7,0,new PVector(0,70), new PVector(0,700), new PVector(0,1000)); 
+                 c.coverdraw(pindex,pageh);
+                 c=cover.get(pindex+1); copy(c.page[0],0,0,page[pindex].width,height,0,int(((pindex+1)*pageh)-mousewheel),width,height);
+                 break;
+      case(14):  p.spdraw(pindex, pageh,-H,0,new PVector(0,50), new PVector(0,-885), new PVector(0,1000));
+                 c.coverdraw(pindex,pageh); 
+                 break;
       case(15):  p.spdraw(pindex, pageh,0,0,new PVector(0,0),new PVector(0,0),new PVector(0,0));  
                  p=smallpage.get(pindex+1); p.spdraw(pindex, pageh,0,0,new PVector(0,50), new PVector(0,pageh-250), new PVector(0,pageh+200)); break;
       case(16):  p.spdraw(pindex, pageh,-H,0,new PVector(0,50),new PVector(0,-68),new PVector(0,150));  break;
-      case(17):  p.spdraw(pindex, pageh,0,0,new PVector(0,-50),new PVector(0,400),new PVector(0,-100));  break;
-      case(19):  p=smallpage.get(pindex+1); p.spdraw(pindex, pageh,0,0,new PVector(100,0), new PVector(-W/1.2,pageh), new PVector(0,pageh)); break;
+      case(17):  p.spdraw(pindex, pageh,0,0,new PVector(0,-50),new PVector(0,400),new PVector(0,-100));  
+                 break;
+      case(19):  
+                 if (mousewheel-(pindex*pageh)>450 && mousewheel-(pindex*pageh)<pageh-750){
+                   push();
+                     noStroke();
+                     float w=(mousewheel-(pindex*pageh))*4;
+                     if ((w/(pageh-1300))%2==0)  fill(255,map(w%(pageh-1300),0,pageh-1300,0,100));
+                     else fill(255,map(w%(pageh-1300),0,pageh-1300,100,0));
+                     rect(0,pageh/3.6-(mousewheel-(pindex*pageh)),W, H*1.45);
+                   pop();
+                 }
+                 p=smallpage.get(pindex+1); p.spdraw(pindex, pageh,0,0,new PVector(100,0), new PVector(-W/1.2,pageh), new PVector(0,pageh)); break;
       case(20):  p.spdraw(pindex, pageh,-H,0,new PVector(100,0),new PVector(-W/3-60,0),new PVector(W,0));  break;
       case(21):  p.spdraw(pindex, pageh,H2,0,new PVector(0,-100),new PVector(0,100),new PVector(0,0));  break;
       default: break;
@@ -103,7 +123,6 @@ class SP{
         }
         float movey=map(alpha-i*fadegap,0,200,move.y,0);
         float movex=map(alpha-i*fadegap,0,200,move.x,0);
-        println(pageloca[i].x,pageloca[i].y);
         if (move.y<0){
           pageloca[i].y=max(-int(mousewheel-(pindex*pageh))+from.y-movey,-int(mousewheel-(pindex*pageh))+to.y);
         }
@@ -117,6 +136,12 @@ class SP{
         
         image(page[i],pageloca[i].x,pageloca[i].y);
       pop();
+    }
+  }
+  
+  void coverdraw(int pindex,float pageh){
+    for (int i=0; i<page.length; i++){
+      copy(page[i],0,int(mousewheel-(pindex*pageh)),page[i].width,height,0,0,width,height);
     }
   }
   

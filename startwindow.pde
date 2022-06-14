@@ -27,7 +27,7 @@ void swdraw(){
     translate(-(W2-10),-(H2-180));
   pop();
   if(frameCount<fadetime){
-    fadein(); return;
+    fadein(copy()); return;
   }
   ////---------text---------////
   push();

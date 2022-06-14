@@ -3,7 +3,7 @@ PVector leaflocation;
 void testset(){
   leaf=loadImage(Path+"leaf-1.png");
   leaf.resize(width,height*(leaf.width/width));
-  mousewheel=18 *leaf.height;
+  mousewheel=17 *leaf.height;
   leaflocation=new PVector(-W2-150,-H2+80);
 }
 void testdraw(){
