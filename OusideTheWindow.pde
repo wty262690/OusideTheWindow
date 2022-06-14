@@ -1,6 +1,6 @@
 import processing.sound.*;
 import java.util.* ;
-int state=0;
+int state=1;
 boolean video=false, comic=!video;
 float mousewheel=0, startmcvolume=0.001, fadevolume=0.005;
 PImage back;

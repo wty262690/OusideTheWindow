@@ -1,40 +1,60 @@
 class BP{
-  String[] pagename = new String[10];
-  String[] smallpagename = new String[10];
+  int pagenum=21;
+  String[] pagename = new String[pagenum];
+  String[] smallpagename = new String[pagenum];
   PImage[] page= new PImage[pagename.length];
-  int [] SamllPageNum={0,0,0,3,0,1,0,0,2,0};
+  int [] SamllPageNum={0,0,0,3,0,1,0,0,2,0,4,1,1,1,1,1,0,0,1,1,0};
+  int [] cover={0,0,0,0,0,1,0,0,2,0,4,1,1,1,1,1,0,0,1,1,0};
   ArrayList<SP> smallpage ;
-  
+  SP leaf;  
   float pageh;
   BP(){
     smallpage = new ArrayList<SP>();
+    leaf= new SP("leaf",1);
     for(int i=0; i<page.length; i++){
       pagename[i]=str(i+2);
       page[i]=loadImage(Path+pagename[i]+".png");
       page[i].resize(width,height*(page[i].width/width));
-      smallpage.add(new SP(i+2,SamllPageNum[i]));
+      smallpage.add(new SP(str(i+2),SamllPageNum[i]));
     }
     pageh=page[0].height;
   }
   void bpdraw(){
     ////---------background---------////
-    int pindex=min(9,int(mousewheel/pageh));
+    int pindex=int(mousewheel/pageh);
     if (pindex>=0 && pindex<page.length){
       copy(page[pindex],0,int(mousewheel-(pindex*pageh)),page[pindex].width,height,0,0,width,height);
       if (pindex+1<page.length)  copy(page[pindex+1],0,0,page[pindex].width,height,0,int(((pindex+1)*pageh)-mousewheel),width,height);
     }
     else {
       mousewheel=pageh*pindex;
+      if (pindex<0) pindex++;
+      else pindex--;
+      print("end");
     }
     
     ////---------window---------////
     SP p;
     p = smallpage.get(pindex);
     switch(pindex+2){
-      case(5):  p.spdraw(pindex, pageh,1,H/8,250, new PVector(0,100));  break;
-      case(7):  p.spdraw(pindex, pageh,2,H/1.5,0, new PVector(-100,0));  break;
-      case(10):  p.spdraw(pindex, pageh,1,H/8,300,new PVector(0,100));  p.leafdraw(pindex,pageh); break;
-      case(11):  p.leafdraw(pindex-1,pageh); break;
+      case(5):  p.spdraw(pindex, pageh,H/8,250, new PVector(0,-100), new PVector(0,100), new PVector(0,0));  break;
+      case(7):  p.spdraw(pindex, pageh,H/1.5,0, new PVector(100,0), new PVector(-100,0),  new PVector(0,0));  break;
+      case(10):  p.spdraw(pindex, pageh,H/8,300,new PVector(0,-100), new PVector(0,100), new PVector(0,0));
+                 if (mousewheel-(pindex*pageh)<pageh/2)  leaf.spdraw(pindex, pageh,0,0,new PVector(((mousewheel-(pageh*pindex)))*0.5,(mousewheel-(pageh*pindex)*0.5)*0.05),new PVector(-W2,0),new PVector(W2,pageh));
+                 else if (mousewheel-(pindex*pageh)>pageh/2)  leaf.spdraw(pindex, pageh,H,0,new PVector(-((mousewheel-(pageh*pindex)))*0.5,(mousewheel-(pageh*pindex)*0.5)*0.04),new PVector(W2,H*1.2),new PVector(-W,pageh*2));  
+                 break;
+      case(11):  leaf.spdraw(pindex, pageh,0,0,new PVector(((mousewheel-(pageh*pindex)))*0.9,(mousewheel-(pageh*pindex)*0.5)*0.025),new PVector(-W/1.2,H/3),new PVector(W2,pageh)); break;
+      case(12):  p.spdraw(pindex, pageh,-H/8,100,new PVector(0,0), new PVector(0,0), new PVector(0,0)); break;
+      case(13):  p.spdraw(pindex, pageh,H/8,300,new PVector(0,50), new PVector(0,-30), new PVector(0,0));  
+                 p=smallpage.get(pindex+1); p.spdraw(pindex, pageh,H*1.7,0,new PVector(0,70), new PVector(0,700), new PVector(0,1000)); break;
+      case(14):  p.spdraw(pindex, pageh,-H,0,new PVector(0,50), new PVector(0,-885), new PVector(0,1000)); break;
+      case(15):  p.spdraw(pindex, pageh,0,0,new PVector(0,0),new PVector(0,0),new PVector(0,0));  
+                 p=smallpage.get(pindex+1); p.spdraw(pindex, pageh,0,0,new PVector(0,50), new PVector(0,pageh-250), new PVector(0,pageh+200)); break;
+      case(16):  p.spdraw(pindex, pageh,-H,0,new PVector(0,50),new PVector(0,-68),new PVector(0,150));  break;
+      case(17):  p.spdraw(pindex, pageh,0,0,new PVector(0,-50),new PVector(0,400),new PVector(0,-100));  break;
+      case(19):  p=smallpage.get(pindex+1); p.spdraw(pindex, pageh,0,0,new PVector(100,0), new PVector(-W/1.2,pageh), new PVector(0,pageh)); break;
+      case(20):  p.spdraw(pindex, pageh,-H,0,new PVector(100,0),new PVector(-W/3-60,0),new PVector(W,0));  break;
+      case(21):  p.spdraw(pindex, pageh,H2,0,new PVector(0,-100),new PVector(0,100),new PVector(0,0));  break;
       default: break;
     }
   }
@@ -42,10 +62,9 @@ class BP{
 
 class SP{
   PImage[] page;
-  PImage leaf;
   PVector[] pageloca;
   float alpha=0;
-  SP(int path, int num){
+  SP(String path, int num){
     page=new PImage[num];
     pageloca= new PVector[num];
     for (int i=0; i<num; i++){
@@ -62,11 +81,9 @@ class SP{
       page[i].updatePixels();
       /////////////////////////////////////////////////////////*/
     }
-    leaf=loadImage(Path+"10-leaf.png");
-    leaf.resize(width,height*(leaf.width/width));
   }
   
-  void spdraw(int pindex, float pageh, float speed , float fadeh, float fadegap,PVector move){
+  void spdraw(int pindex, float pageh, float fadeh, float fadegap,PVector move,PVector from, PVector to){
     alpha=mousewheel-(pindex*pageh)-fadeh;//println(alpha);
     for (int i=0; i<page.length; i++){
       /*/////////////////////////////////////////////////////////
@@ -81,14 +98,22 @@ class SP{
       push();
         tint(255, min(alpha-i*fadegap,300));// this is better 
         if (alpha<0){
-          pageloca[i].x=move.x;
-          pageloca[i].y=move.y;
+          pageloca[i].x=from.x;
+          pageloca[i].y=from.y;
         }
-        float movex=map(alpha-i*fadegap,0,200,move.x,0);
         float movey=map(alpha-i*fadegap,0,200,move.y,0);
-        
-        pageloca[i].x= min(movex,0);
-        pageloca[i].y=-int(mousewheel-(pindex*pageh))+max(movey,0);
+        float movex=map(alpha-i*fadegap,0,200,move.x,0);
+        println(pageloca[i].x,pageloca[i].y);
+        if (move.y<0){
+          pageloca[i].y=max(-int(mousewheel-(pindex*pageh))+from.y-movey,-int(mousewheel-(pindex*pageh))+to.y);
+        }
+        else { 
+          pageloca[i].y=min(-int(mousewheel-(pindex*pageh))+from.y-movey,-int(mousewheel-(pindex*pageh))+to.y);
+        }
+        if (move.x<0){pageloca[i].x= max(from.x-movex,to.x);}
+        else {
+          pageloca[i].x= min(from.x-movex,to.x);
+        }
         
         image(page[i],pageloca[i].x,pageloca[i].y);
       pop();
@@ -103,5 +128,4 @@ class SP{
       image(leaf,-W/4,-H2);
     pop();
   }
-  
 }
