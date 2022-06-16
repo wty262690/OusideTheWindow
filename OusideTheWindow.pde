@@ -4,6 +4,7 @@ int state=0;
 boolean video=false, comic=!video;
 float mousewheel=0, startmcvolume=0.001, fadevolume=0.005;
 PImage back;
+String Path="https://raw.githubusercontent.com/wty262690/OusideTheWindow/main/";
 int fadetime=300, wheelspeed=20;
 SoundFile startmusic;
 
@@ -32,7 +33,6 @@ void draw(){
   if (video)  mousewheel+=wheelspeed/10;
   startmusic.amp(startmcvolume);//println(startmcvolume);
   if (!startmusic.isPlaying()){startmusic.loop();}
-  
   if(frameCount<150) fadeout(back);
   else {
     switch(state){

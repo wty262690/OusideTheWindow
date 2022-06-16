@@ -1,13 +1,12 @@
 PImage background,bell;
-String Path="/image/";
 float W, H, W2, H2;
 float bellrotate=0, brchange=0.005;
 
 void swsetup(){
   size(849,729,P2D);
   W=width; H=height; W2=W/2; H2=H/2;
-  background=loadImage(Path+"1-background.png");  
-  bell=loadImage(Path+"1-bell.png");
+  background=loadImage(Path+"image/"+"1-background.png");  
+  bell=loadImage(Path+"image/"+"1-bell.png");
   bell.resize(width,height);
   background.resize(width,height);
   }

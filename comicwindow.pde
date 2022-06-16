@@ -35,7 +35,6 @@ void comicdraw(){
     }
   }
   else playbirdsound=false;
-  
   ////--------- play type button ---------////
   /*if(buttonapla<0 || buttonapla>20) changeba*=-1;
   buttonapla+=changeba;
