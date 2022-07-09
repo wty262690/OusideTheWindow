@@ -16,7 +16,7 @@ class BP{
     leaf= new SP("leaf",1);
     for(int i=0; i<page.length; i++){
       pagename[i]=str(i+2);
-      page[i]=loadImage(Path+"image/"+pagename[i]+".png");
+      page[i]=loadImage("/image/"+pagename[i]+".png");
       page[i].resize(width,height*(page[i].width/width));
       smallpage.add(new SP(str(i+2),SamllPageNum[i]));
       cover.add(new SP(str(i+2)+"-cover",CoverNum[i]));
@@ -88,7 +88,7 @@ class SP{
     page=new PImage[num];
     pageloca= new PVector[num];
     for (int i=0; i<num; i++){
-      page[i]=loadImage(Path+"image/"+path+"-"+str(i+1)+".png");
+      page[i]=loadImage("/image/"+path+"-"+str(i+1)+".png");
       page[i].resize(width,height*(page[i].width/width));
       pageloca[i]=new PVector(0,0);
       ////---------change (0,0,0,0) into (255,0,0,0) ---------////
