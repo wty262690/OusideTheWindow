@@ -23,7 +23,7 @@ void setup(){
   printArray(PFont.list());
   */
   textFont(createFont(PFont.list()[143],200));
-  startmusic = new SoundFile(OusideTheWindow.this, "/sound/Keys of Moon - Cozy Place cut.wav");
+  startmusic = new SoundFile(OusideTheWindow.this, "/sound/KeysofMoon-CozyPlacecut.wav");
   startmusic.amp(startmcvolume);
   reset();  
   }
